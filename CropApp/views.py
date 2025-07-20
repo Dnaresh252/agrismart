@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.template import RequestContext
 from django.contrib import messages
-import pymysql
+
 from django.http import HttpResponse
 import pandas as pd
 import numpy as np

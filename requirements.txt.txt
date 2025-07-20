@@ -1,0 +1,8 @@
+Django
+tensorflow
+keras
+h5py
+numpy
+pandas
+scikit-learn
+gunicorn
