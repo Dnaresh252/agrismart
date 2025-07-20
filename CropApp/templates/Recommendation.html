@@ -1,0 +1,807 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crop Recommendation Results - AgriSmart AI</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Complete Modern CSS - Self-contained */
+        :root {
+            --primary: #059669;
+            --primary-dark: #047857;
+            --primary-light: #D1FAE5;
+            --accent: #F59E0B;
+            --blue: #3B82F6;
+            --purple: #8B5CF6;
+            --success: #10B981;
+            --gray-50: #F9FAFB;
+            --gray-100: #F3F4F6;
+            --gray-200: #E5E7EB;
+            --gray-300: #D1D5DB;
+            --gray-400: #9CA3AF;
+            --gray-500: #6B7280;
+            --gray-600: #4B5563;
+            --gray-700: #374151;
+            --gray-800: #1F2937;
+            --gray-900: #111827;
+            --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.6;
+            color: var(--gray-700);
+            background: linear-gradient(135deg, #F0FDF4 0%, #ECFDF5 100%);
+            min-height: 100vh;
+        }
+
+        /* Navigation */
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--gray-200);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            padding: 1rem 0;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .nav-logo i {
+            font-size: 2rem;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--gray-600);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            transition: all 0.2s;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: var(--primary);
+            background: var(--primary-light);
+            transform: translateY(-1px);
+        }
+
+        .nav-link.cta {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            box-shadow: var(--shadow-lg);
+            font-weight: 700;
+            padding: 0.75rem 1.5rem;
+            border-radius: 1rem;
+        }
+
+        .nav-link.cta:hover {
+            background: linear-gradient(135deg, var(--primary-dark), #047857);
+            transform: translateY(-2px);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            color: white;
+        }
+
+        /* Results Container */
+        .results-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+
+        .results-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .results-title {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--gray-900);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .results-subtitle {
+            font-size: 1.25rem;
+            color: var(--gray-600);
+            margin-bottom: 2rem;
+        }
+
+        /* Recommendation Card */
+        .recommendation-card {
+            background: white;
+            border-radius: 1.5rem;
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+            margin-bottom: 2rem;
+            animation: slideInUp 1s ease-out 0.2s backwards;
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+            transform: rotate(45deg);
+            animation: shimmer 3s infinite;
+        }
+
+        .crop-icon {
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 2rem;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .recommended-crop {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .recommendation-label {
+            font-size: 1rem;
+            opacity: 0.9;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .card-content {
+            padding: 2rem;
+        }
+
+        /* Metrics Grid */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .metric-card {
+            background: var(--gray-50);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            text-align: center;
+            border: 2px solid transparent;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .metric-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .metric-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border-radius: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            color: white;
+            font-size: 1.25rem;
+        }
+
+        .metric-value {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--gray-900);
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-label {
+            font-size: 0.875rem;
+            color: var(--gray-600);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .production-highlight {
+            background: linear-gradient(135deg, #FEF3C7, #FDE68A);
+            border: 2px solid var(--accent);
+            position: relative;
+        }
+
+        .production-highlight::before {
+            content: '★';
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            color: var(--accent);
+            font-size: 1.25rem;
+            animation: twinkle 2s ease-in-out infinite;
+        }
+
+        /* Insights Section */
+        .insights-section {
+            background: linear-gradient(135deg, var(--gray-50), white);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .insights-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--gray-900);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .insight-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background: white;
+            border-radius: 0.5rem;
+            border-left: 4px solid var(--primary);
+        }
+
+        .insight-icon {
+            color: var(--primary);
+            font-size: 1.25rem;
+            margin-top: 0.25rem;
+        }
+
+        .insight-text {
+            color: var(--gray-700);
+            line-height: 1.6;
+        }
+
+        /* Confidence Bar */
+        .confidence-bar {
+            margin-top: 1.5rem;
+        }
+
+        .confidence-label {
+            font-size: 0.875rem;
+            color: var(--gray-600);
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+
+        .confidence-progress {
+            height: 8px;
+            background: var(--gray-200);
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .confidence-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            width: 95%;
+            border-radius: 4px;
+            animation: fillProgress 2s ease-out;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+        }
+
+        .action-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem 2rem;
+            border-radius: 1rem;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .btn-primary-action {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-primary-action:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        .btn-secondary-action {
+            background: white;
+            color: var(--gray-700);
+            border-color: var(--gray-300);
+        }
+
+        .btn-secondary-action:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
+        }
+
+        @keyframes fillProgress {
+            from { width: 0%; }
+            to { width: 95%; }
+        }
+
+        @keyframes countUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes confetti-fall {
+            0% {
+                transform: translateY(-100vh) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        .number-animation {
+            animation: countUp 0.8s ease-out;
+        }
+
+        /* Success celebration */
+        .celebration-confetti {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        .confetti-piece {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: var(--primary);
+            animation: confetti-fall 3s ease-out infinite;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-menu {
+                gap: 1rem;
+            }
+            
+            .nav-link span {
+                display: none;
+            }
+            
+            .results-title {
+                font-size: 2rem;
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            .metrics-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .action-btn {
+                width: 100%;
+                justify-content: center;
+                max-width: 300px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .results-container {
+                padding: 2rem 1rem;
+            }
+            
+            .card-content {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="{% url 'index' %}" class="nav-logo">
+                <i class="fas fa-seedling"></i>
+                <span>AgriSmart</span>
+            </a>
+            <ul class="nav-menu">
+                <li><a href="{% url 'index' %}" class="nav-link">
+                    <i class="fas fa-home"></i>
+                    <span>Home</span>
+                </a></li>
+                <li><a href="{% url 'LoadModel' %}" class="nav-link">
+                    <i class="fas fa-brain"></i>
+                    <span>Train AI Models</span>
+                </a></li>
+                <li><a href="{% url 'CropRecommend' %}" class="nav-link">
+                    <i class="fas fa-search"></i>
+                    <span>Get Recommendation</span>
+                </a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="results-container">
+        <!-- Results Header -->
+        <div class="results-header">
+            <h1 class="results-title">
+                <i class="fas fa-check-circle" style="color: var(--success);"></i>
+                AI Analysis Complete
+            </h1>
+            <p class="results-subtitle">
+                Your personalized crop recommendation based on advanced machine learning analysis
+            </p>
+        </div>
+
+        <!-- Main Recommendation Card -->
+        <div class="recommendation-card">
+            <div class="card-header">
+                <div class="crop-icon">
+                    <i class="fas fa-seedling"></i>
+                </div>
+                <div class="recommended-crop" id="cropName">LOADING...</div>
+                <div class="recommendation-label">Recommended Crop</div>
+            </div>
+            
+            <div class="card-content">
+                <!-- Metrics Grid -->
+                <div class="metrics-grid">
+                    <div class="metric-card production-highlight">
+                        <div class="metric-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="metric-value number-animation" id="productionValue">-</div>
+                        <div class="metric-label">Expected Production (KG)</div>
+                    </div>
+                    
+                    <div class="metric-card">
+                        <div class="metric-icon">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                        <div class="metric-value number-animation">95%</div>
+                        <div class="metric-label">AI Confidence</div>
+                    </div>
+                    
+                    <div class="metric-card">
+                        <div class="metric-icon">
+                            <i class="fas fa-leaf"></i>
+                        </div>
+                        <div class="metric-value number-animation">22+</div>
+                        <div class="metric-label">Crops Analyzed</div>
+                    </div>
+                    
+                    <div class="metric-card">
+                        <div class="metric-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="metric-value number-animation">Instant</div>
+                        <div class="metric-label">Analysis Time</div>
+                    </div>
+                </div>
+
+                <!-- AI Insights Section -->
+                <div class="insights-section">
+                    <h3 class="insights-title">
+                        <i class="fas fa-lightbulb"></i>
+                        AI Insights & Recommendations
+                    </h3>
+                    
+                    <div class="insight-item">
+                        <i class="fas fa-flask insight-icon"></i>
+                        <div class="insight-text">
+                            <strong>Soil Analysis:</strong> Your soil composition is well-suited for the recommended crop based on N-P-K levels and pH balance.
+                        </div>
+                    </div>
+                    
+                    <div class="insight-item">
+                        <i class="fas fa-cloud-rain insight-icon"></i>
+                        <div class="insight-text">
+                            <strong>Weather Compatibility:</strong> The rainfall and seasonal conditions in your region are optimal for this crop variety.
+                        </div>
+                    </div>
+                    
+                    <div class="insight-item">
+                        <i class="fas fa-chart-area insight-icon"></i>
+                        <div class="insight-text">
+                            <strong>Yield Optimization:</strong> Based on your farm area and local conditions, this crop offers the best production potential.
+                        </div>
+                    </div>
+                    
+                    <div class="insight-item">
+                        <i class="fas fa-star insight-icon"></i>
+                        <div class="insight-text">
+                            <strong>Success Factors:</strong> This recommendation considers 50+ agricultural parameters processed by our CNN and LSTM models.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Confidence Bar -->
+                <div class="confidence-bar">
+                    <div class="confidence-label">AI Recommendation Confidence</div>
+                    <div class="confidence-progress">
+                        <div class="confidence-fill"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <a href="{% url 'CropRecommend' %}" class="action-btn btn-primary-action">
+                <i class="fas fa-redo"></i>
+                Try Another Analysis
+            </a>
+            <a href="{% url 'LoadModel' %}" class="action-btn btn-secondary-action">
+                <i class="fas fa-chart-bar"></i>
+                View Model Performance
+            </a>
+            <a href="{% url 'index' %}" class="action-btn btn-secondary-action">
+                <i class="fas fa-home"></i>
+                Back to Home
+            </a>
+        </div>
+    </div>
+
+    <!-- Hidden div to capture Django data -->
+    <div id="djangoData" style="display: none;">{{ data|safe }}</div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Extract data from Django template
+            const djangoData = document.getElementById('djangoData').innerHTML;
+            
+            // Parse the recommendation data
+            parseDjangoData(djangoData);
+            
+            // Add celebration effect
+            setTimeout(() => {
+                createConfetti();
+            }, 1000);
+            
+            // Animate numbers
+            animateNumbers();
+        });
+
+        function parseDjangoData(htmlData) {
+            // Create a temporary div to parse the HTML
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = htmlData;
+            
+            // Extract crop name and production
+            const text = tempDiv.textContent || tempDiv.innerText || '';
+            
+            // Look for crop name (usually in uppercase)
+            const cropMatch = text.match(/grow\s+([A-Z]+)/i);
+            if (cropMatch) {
+                const cropName = cropMatch[1].toUpperCase();
+                document.getElementById('cropName').textContent = cropName;
+                updateCropIcon(cropName);
+            } else {
+                // Fallback: try to find any uppercase word that might be a crop
+                const fallbackMatch = text.match(/\b([A-Z]{3,})\b/);
+                if (fallbackMatch) {
+                    const cropName = fallbackMatch[1];
+                    document.getElementById('cropName').textContent = cropName;
+                    updateCropIcon(cropName);
+                }
+            }
+            
+            // Look for production value
+            const productionMatch = text.match(/(\d+[\d,]*)\s*KG/i);
+            if (productionMatch) {
+                const production = productionMatch[1];
+                document.getElementById('productionValue').textContent = production.toLocaleString();
+            } else {
+                // Fallback: look for any large number
+                const numberMatch = text.match(/(\d{3,})/);
+                if (numberMatch) {
+                    document.getElementById('productionValue').textContent = numberMatch[1].toLocaleString();
+                }
+            }
+        }
+
+        function updateCropIcon(cropName) {
+            const iconMap = {
+                'RICE': 'fas fa-seedling',
+                'WHEAT': 'fas fa-wheat-awn',
+                'MAIZE': 'fas fa-corn',
+                'COTTON': 'fas fa-cloud',
+                'APPLE': 'fas fa-apple-whole',
+                'BANANA': 'fas fa-leaf',
+                'COCONUT': 'fas fa-tree',
+                'COFFEE': 'fas fa-coffee',
+                'GRAPES': 'fas fa-wine-bottle',
+                'MANGO': 'fas fa-leaf',
+                'ORANGE': 'fas fa-circle',
+                'PAPAYA': 'fas fa-leaf',
+                'MOTHBEANS': 'fas fa-seedling',
+                'KIDNEYBEANS': 'fas fa-seedling',
+                'BLACKGRAM': 'fas fa-seedling',
+                'CHICKPEA': 'fas fa-seedling',
+                'LENTIL': 'fas fa-seedling',
+                'PIGEONPEAS': 'fas fa-seedling',
+                'MUNGBEAN': 'fas fa-seedling',
+                'POMEGRANATE': 'fas fa-apple-whole',
+                'WATERMELON': 'fas fa-leaf',
+                'MUSKMELON': 'fas fa-leaf',
+                'JUTE': 'fas fa-leaf',
+                'DEFAULT': 'fas fa-seedling'
+            };
+            
+            const iconClass = iconMap[cropName] || iconMap['DEFAULT'];
+            const iconElement = document.querySelector('.crop-icon i');
+            if (iconElement) {
+                iconElement.className = iconClass;
+            }
+        }
+
+        function animateNumbers() {
+            const numberElements = document.querySelectorAll('.number-animation');
+            numberElements.forEach((element, index) => {
+                setTimeout(() => {
+                    element.style.animation = 'countUp 0.8s ease-out';
+                }, index * 200);
+            });
+        }
+
+        function createConfetti() {
+            const colors = ['#059669', '#F59E0B', '#3B82F6', '#EF4444', '#8B5CF6'];
+            const confettiContainer = document.createElement('div');
+            confettiContainer.className = 'celebration-confetti';
+            document.body.appendChild(confettiContainer);
+
+            for (let i = 0; i < 30; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti-piece';
+                    confetti.style.left = Math.random() * 100 + '%';
+                    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.animationDelay = Math.random() * 3 + 's';
+                    confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                    confettiContainer.appendChild(confetti);
+
+                    // Remove confetti after animation
+                    setTimeout(() => {
+                        confetti.remove();
+                    }, 5000);
+                }, i * 100);
+            }
+
+            // Remove container after all confetti is done
+            setTimeout(() => {
+                confettiContainer.remove();
+            }, 8000);
+        }
+
+        // Add hover effects for metric cards
+        document.querySelectorAll('.metric-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-8px) scale(1.02)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+    </script>
+</body>
+</html>

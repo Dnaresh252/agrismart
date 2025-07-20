@@ -1,0 +1,800 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crop Recommendation - AgriSmart AI</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Complete Modern CSS - Self-contained */
+        :root {
+            --primary: #059669;
+            --primary-dark: #047857;
+            --primary-light: #D1FAE5;
+            --accent: #F59E0B;
+            --blue: #3B82F6;
+            --purple: #8B5CF6;
+            --gray-50: #F9FAFB;
+            --gray-100: #F3F4F6;
+            --gray-200: #E5E7EB;
+            --gray-300: #D1D5DB;
+            --gray-400: #9CA3AF;
+            --gray-500: #6B7280;
+            --gray-600: #4B5563;
+            --gray-700: #374151;
+            --gray-800: #1F2937;
+            --gray-900: #111827;
+            --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            --error: #EF4444;
+            --success: #10B981;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.6;
+            color: var(--gray-700);
+            background: linear-gradient(135deg, #F0FDF4 0%, #ECFDF5 100%);
+            min-height: 100vh;
+        }
+
+        /* Navigation */
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--gray-200);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            padding: 1rem 0;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .nav-logo i {
+            font-size: 2rem;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--gray-600);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            transition: all 0.2s;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: var(--primary);
+            background: var(--primary-light);
+            transform: translateY(-1px);
+        }
+
+        .nav-link.cta {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            box-shadow: var(--shadow-lg);
+            font-weight: 700;
+            padding: 0.75rem 1.5rem;
+            border-radius: 1rem;
+        }
+
+        .nav-link.cta:hover {
+            background: linear-gradient(135deg, var(--primary-dark), #047857);
+            transform: translateY(-2px);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            color: white;
+        }
+
+        /* Form Container */
+        .form-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            background: white;
+            padding: 2rem;
+            border-radius: 1.5rem;
+            box-shadow: var(--shadow-lg);
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .form-title {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--gray-900);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .form-subtitle {
+            font-size: 1.25rem;
+            color: var(--gray-600);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .progress-bar {
+            height: 4px;
+            background: var(--gray-200);
+            border-radius: 2px;
+            overflow: hidden;
+            margin-bottom: 3rem;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            width: 0%;
+            transition: width 0.3s;
+        }
+
+        /* Form Sections */
+        .form-card {
+            background: white;
+            border-radius: 1.5rem;
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+            margin-bottom: 2rem;
+            animation: slideInUp 1s ease-out;
+        }
+
+        .form-section {
+            padding: 2rem;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--gray-900);
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--gray-100);
+        }
+
+        .section-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border-radius: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.25rem;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: var(--gray-700);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .label-icon {
+            color: var(--primary);
+            font-size: 1rem;
+        }
+
+        .form-input, .form-select {
+            padding: 1rem;
+            border: 2px solid var(--gray-200);
+            border-radius: 1rem;
+            font-size: 1rem;
+            transition: all 0.2s;
+            background: white;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .form-input:focus, .form-select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .form-input:hover, .form-select:hover {
+            border-color: var(--primary-light);
+        }
+
+        .input-hint {
+            font-size: 0.875rem;
+            color: var(--gray-500);
+            margin-top: 0.25rem;
+        }
+
+        .error {
+            border-color: var(--error) !important;
+            background: #FEF2F2 !important;
+        }
+
+        .error-message {
+            color: var(--error);
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+            display: none;
+        }
+
+        /* Submit Section */
+        .submit-section {
+            background: linear-gradient(135deg, var(--gray-50), white);
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .submit-button {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border: none;
+            padding: 1rem 3rem;
+            border-radius: 1.5rem;
+            font-size: 1.25rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            box-shadow: var(--shadow-lg);
+            min-width: 250px;
+            justify-content: center;
+        }
+
+        .submit-button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            background: linear-gradient(135deg, var(--primary-dark), #047857);
+        }
+
+        .submit-button:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        .loading-spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid transparent;
+            border-top: 2px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        .submit-description {
+            margin-top: 1rem;
+            color: var(--gray-600);
+            font-size: 1rem;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-menu {
+                gap: 1rem;
+            }
+            
+            .nav-link span {
+                display: none;
+            }
+            
+            .form-title {
+                font-size: 2rem;
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .section-title {
+                font-size: 1.25rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .form-container {
+                padding: 2rem 1rem;
+            }
+            
+            .form-section {
+                padding: 1.5rem;
+            }
+        }
+
+        /* Success animations */
+        .success-checkmark {
+            display: none;
+            color: var(--success);
+            animation: bounceIn 0.5s ease;
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="{% url 'index' %}" class="nav-logo">
+                <i class="fas fa-seedling"></i>
+                <span>AgriSmart</span>
+            </a>
+            <ul class="nav-menu">
+                <li><a href="{% url 'index' %}" class="nav-link">
+                    <i class="fas fa-home"></i>
+                    <span>Home</span>
+                </a></li>
+                <li><a href="{% url 'LoadModel' %}" class="nav-link">
+                    <i class="fas fa-brain"></i>
+                    <span>Train AI Models</span>
+                </a></li>
+                <li><a href="{% url 'CropRecommend' %}" class="nav-link active">
+                    <i class="fas fa-search"></i>
+                    <span>Get Recommendation</span>
+                </a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="form-container">
+        <!-- Form Header -->
+        <div class="form-header">
+            <h1 class="form-title">
+                <i class="fas fa-seedling" style="color: var(--primary);"></i>
+                Crop Recommendation
+            </h1>
+            <p class="form-subtitle">
+                Enter your farm's soil and environmental data to get AI-powered crop recommendations with production forecasts
+            </p>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+
+        <form name="f1" method="post" action="{% url 'CropRecommendAction' %}" onsubmit="return validateForm()" id="cropForm">
+            {% csrf_token %}
+            
+            <!-- Soil Analysis Section -->
+            <div class="form-card">
+                <div class="form-section">
+                    <h2 class="section-title">
+                        <div class="section-icon">
+                            <i class="fas fa-flask"></i>
+                        </div>
+                        Soil Analysis
+                    </h2>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="fas fa-leaf label-icon"></i>
+                                Nitrogen (N)
+                            </label>
+                            <input 
+                                type="number" 
+                                name="t1" 
+                                class="form-input" 
+                                placeholder="e.g., 90"
+                                step="0.1"
+                                min="0"
+                                data-field="nitrogen"
+                                required
+                            />
+                            <div class="input-hint">Nitrogen content in kg/ha</div>
+                            <div class="error-message" id="nitrogenError">Please enter nitrogen value</div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="fas fa-seedling label-icon"></i>
+                                Phosphorus (P)
+                            </label>
+                            <input 
+                                type="number" 
+                                name="t2" 
+                                class="form-input" 
+                                placeholder="e.g., 42"
+                                step="0.1"
+                                min="0"
+                                data-field="phosphorus"
+                                required
+                            />
+                            <div class="input-hint">Phosphorus content in kg/ha</div>
+                            <div class="error-message" id="phosphorusError">Please enter phosphorus value</div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="fas fa-gem label-icon"></i>
+                                Potassium (K)
+                            </label>
+                            <input 
+                                type="number" 
+                                name="t3" 
+                                class="form-input" 
+                                placeholder="e.g., 43"
+                                step="0.1"
+                                min="0"
+                                data-field="potassium"
+                                required
+                            />
+                            <div class="input-hint">Potassium content in kg/ha</div>
+                            <div class="error-message" id="potassiumError">Please enter potassium value</div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="fas fa-vial label-icon"></i>
+                                pH Level
+                            </label>
+                            <input 
+                                type="number" 
+                                name="t4" 
+                                class="form-input" 
+                                placeholder="e.g., 6.8"
+                                step="0.1"
+                                min="0"
+                                max="14"
+                                data-field="ph"
+                                required
+                            />
+                            <div class="input-hint">Soil pH level (0-14)</div>
+                            <div class="error-message" id="phError">Please enter pH level</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Environmental Conditions Section -->
+            <div class="form-card">
+                <div class="form-section">
+                    <h2 class="section-title">
+                        <div class="section-icon">
+                            <i class="fas fa-cloud-rain"></i>
+                        </div>
+                        Environmental Conditions
+                    </h2>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="fas fa-cloud-rain label-icon"></i>
+                                Rainfall
+                            </label>
+                            <input 
+                                type="number" 
+                                name="t5" 
+                                class="form-input" 
+                                placeholder="e.g., 78"
+                                step="0.1"
+                                min="0"
+                                data-field="rainfall"
+                                required
+                            />
+                            <div class="input-hint">Annual rainfall in mm</div>
+                            <div class="error-message" id="rainfallError">Please enter rainfall value</div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="fas fa-calendar-alt label-icon"></i>
+                                Growing Season
+                            </label>
+                            <select name="t7" class="form-select" data-field="season" required>
+                                <option value="">Select Season</option>
+                                <option value="Kharif">Kharif (Monsoon Season)</option>
+                                <option value="Rabi">Rabi (Winter Season)</option>
+                                <option value="Summer">Summer Season</option>
+                                <option value="Autumn">Autumn Season</option>
+                                <option value="Winter">Winter Season</option>
+                                <option value="Whole Year">Whole Year</option>
+                            </select>
+                            <div class="input-hint">Choose the growing season</div>
+                            <div class="error-message" id="seasonError">Please select a season</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Location & Farm Details Section -->
+            <div class="form-card">
+                <div class="form-section">
+                    <h2 class="section-title">
+                        <div class="section-icon">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        Location & Farm Details
+                    </h2>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="fas fa-map label-icon"></i>
+                                State/Region
+                            </label>
+                            <select name="t6" class="form-select" data-field="state" required>
+                                <option value="">Select State</option>
+                                <option value="Andaman and Nicobar Islands">Andaman and Nicobar Islands</option>
+                                <option value="Andhra Pradesh">Andhra Pradesh</option>
+                                <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+                                <option value="Assam">Assam</option>
+                                <option value="Bihar">Bihar</option>
+                                <option value="Chandigarh">Chandigarh</option>
+                                <option value="Chhattisgarh">Chhattisgarh</option>
+                                <option value="Dadra and Nagar Haveli">Dadra and Nagar Haveli</option>
+                                <option value="Goa">Goa</option>
+                                <option value="Gujarat">Gujarat</option>
+                                <option value="Haryana">Haryana</option>
+                                <option value="Himachal Pradesh">Himachal Pradesh</option>
+                                <option value="Jammu and Kashmir">Jammu and Kashmir</option>
+                                <option value="Jharkhand">Jharkhand</option>
+                                <option value="Karnataka">Karnataka</option>
+                                <option value="Kerala">Kerala</option>
+                                <option value="Madhya Pradesh">Madhya Pradesh</option>
+                                <option value="Maharashtra">Maharashtra</option>
+                                <option value="Manipur">Manipur</option>
+                                <option value="Meghalaya">Meghalaya</option>
+                                <option value="Mizoram">Mizoram</option>
+                                <option value="Nagaland">Nagaland</option>
+                                <option value="Odisha">Odisha</option>
+                                <option value="Puducherry">Puducherry</option>
+                                <option value="Punjab">Punjab</option>
+                                <option value="Rajasthan">Rajasthan</option>
+                                <option value="Sikkim">Sikkim</option>
+                                <option value="Tamil Nadu">Tamil Nadu</option>
+                                <option value="Telangana">Telangana</option>
+                                <option value="Tripura">Tripura</option>
+                                <option value="Uttar Pradesh">Uttar Pradesh</option>
+                                <option value="Uttarakhand">Uttarakhand</option>
+                                <option value="West Bengal">West Bengal</option>
+                            </select>
+                            <div class="input-hint">Select your farming location</div>
+                            <div class="error-message" id="stateError">Please select a state</div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="fas fa-expand-arrows-alt label-icon"></i>
+                                Farm Area
+                            </label>
+                            <input 
+                                type="number" 
+                                name="t8" 
+                                class="form-input" 
+                                placeholder="e.g., 2.5"
+                                step="0.1"
+                                min="0.1"
+                                data-field="area"
+                                required
+                            />
+                            <div class="input-hint">Farm area in acres</div>
+                            <div class="error-message" id="areaError">Please enter farm area</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Submit Section -->
+            <div class="form-card">
+                <div class="submit-section">
+                    <button type="submit" class="submit-button" id="submitBtn">
+                        <i class="fas fa-magic" id="submitIcon"></i>
+                        <div class="loading-spinner" id="loadingSpinner"></div>
+                        <span id="submitText">Get AI Recommendation</span>
+                        <i class="fas fa-check success-checkmark" id="successCheck"></i>
+                    </button>
+                    <p class="submit-description">
+                        Our AI will analyze your data and provide personalized crop recommendations
+                    </p>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // Form validation and enhancement
+        function validateForm() {
+            const requiredFields = [
+                { name: 't1', error: 'nitrogenError', message: 'Please enter nitrogen value' },
+                { name: 't2', error: 'phosphorusError', message: 'Please enter phosphorus value' },
+                { name: 't3', error: 'potassiumError', message: 'Please enter potassium value' },
+                { name: 't4', error: 'phError', message: 'Please enter pH level' },
+                { name: 't5', error: 'rainfallError', message: 'Please enter rainfall value' },
+                { name: 't6', error: 'stateError', message: 'Please select a state' },
+                { name: 't7', error: 'seasonError', message: 'Please select a season' },
+                { name: 't8', error: 'areaError', message: 'Please enter farm area' }
+            ];
+
+            let isValid = true;
+
+            // Clear previous errors
+            requiredFields.forEach(field => {
+                const input = document.forms["f1"][field.name];
+                const errorElement = document.getElementById(field.error);
+                if (input && errorElement) {
+                    input.classList.remove('error');
+                    errorElement.style.display = 'none';
+                }
+            });
+
+            // Validate each field
+            requiredFields.forEach(field => {
+                const input = document.forms["f1"][field.name];
+                const errorElement = document.getElementById(field.error);
+                
+                if (input && (!input.value || input.value.trim() === '')) {
+                    input.classList.add('error');
+                    if (errorElement) {
+                        errorElement.style.display = 'block';
+                        errorElement.textContent = field.message;
+                    }
+                    isValid = false;
+                }
+            });
+
+            if (isValid) {
+                showLoading();
+            }
+
+            return isValid;
+        }
+
+        function showLoading() {
+            const submitBtn = document.getElementById('submitBtn');
+            const submitIcon = document.getElementById('submitIcon');
+            const loadingSpinner = document.getElementById('loadingSpinner');
+            const submitText = document.getElementById('submitText');
+
+            submitIcon.style.display = 'none';
+            loadingSpinner.style.display = 'block';
+            submitText.textContent = 'Analyzing Data...';
+            submitBtn.disabled = true;
+        }
+
+        // Progress bar animation
+        function updateProgress() {
+            const inputs = document.querySelectorAll('.form-input, .form-select');
+            let filledInputs = 0;
+
+            inputs.forEach(input => {
+                if (input.value && input.value.trim() !== '') {
+                    filledInputs++;
+                }
+            });
+
+            const progress = (filledInputs / inputs.length) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+        }
+
+        // Add event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            const inputs = document.querySelectorAll('.form-input, .form-select');
+            
+            inputs.forEach(input => {
+                input.addEventListener('input', updateProgress);
+                input.addEventListener('change', updateProgress);
+                
+                // Real-time validation
+                input.addEventListener('blur', function() {
+                    if (this.value && this.value.trim() !== '') {
+                        this.classList.remove('error');
+                        const field = this.getAttribute('data-field');
+                        if (field) {
+                            const errorElement = document.getElementById(field + 'Error');
+                            if (errorElement) {
+                                errorElement.style.display = 'none';
+                            }
+                        }
+                    }
+                });
+            });
+
+            // Initial progress update
+            updateProgress();
+
+            // Add animation delay to cards
+            const cards = document.querySelectorAll('.form-card');
+            cards.forEach((card, index) => {
+                card.style.animationDelay = `${index * 0.2}s`;
+            });
+        });
+    </script>
+</body>
+</html>

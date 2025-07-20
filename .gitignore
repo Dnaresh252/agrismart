@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+*.sqlite3
+
+# Virtual Envs
+env/
+venv/
+cropsenv/
+ENV/
+*.egg-info/
+
+# OS/system
+.DS_Store
+*.log
+
+# Django
+*.sqlite3
+db.sqlite3
+staticfiles/
+media/
+
+# IDEs
+.vscode/
+.idea/
+
+# Model files
+model/*.h5
