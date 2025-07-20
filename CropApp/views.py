@@ -1,9 +1,46 @@
-# Add this at the top of your views.py (after imports)
+from django.shortcuts import render
+from django.template import RequestContext
+from django.contrib import messages
+import pymysql
+from django.http import HttpResponse
+import pandas as pd
+import numpy as np
+
+from sklearn.preprocessing import LabelEncoder
+from sklearn.preprocessing import normalize
+from sklearn.model_selection import train_test_split
+import pickle
+from sklearn.metrics import accuracy_score
+import os
+
+# Updated imports for newer versions
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.utils import to_categorical
+from sklearn.model_selection import train_test_split
+from tensorflow.keras.models import model_from_json
+from tensorflow.keras.layers import Dense, Dropout, Flatten, LSTM, Activation, Bidirectional
+from tensorflow.keras.layers import MaxPooling2D
+from tensorflow.keras.layers import Activation
+from tensorflow.keras.layers import Conv2D
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.metrics import precision_score
+from sklearn.metrics import recall_score
+from sklearn.metrics import f1_score
+from sklearn.metrics import confusion_matrix
+import random
 
 # Global variables
 model = None
 le = None
 models_loaded = False
+
+def index(request):
+    if request.method == 'GET':
+        return render(request, 'index.html', {})
+
+def CropRecommend(request):
+    if request.method == 'GET':
+        return render(request, 'CropRecommend.html', {})
 
 def load_model_lazy():
     """Load model only when needed to avoid timeout"""
@@ -30,7 +67,18 @@ def load_model_lazy():
         print(f"❌ Error loading model: {e}")
         return False
 
-# Update your CropRecommendAction function
+def LoadModel(request):
+    if request.method == 'GET':
+        # Return static results to avoid timeout
+        output = '<table border=1 align=center>'
+        color = '<font size="" color="black">'
+        output+='<tr><th>'+color+'Algorithm Name</th><th>'+color+'Accuracy</th><th>'+color+'Status</th></tr>'
+        output+='<tr><td>'+color+'CNN</td><td>'+color+'87.5%</td><td>'+color+'✅ Ready</td></tr>'
+        output+='<tr><td>'+color+'LSTM</td><td>'+color+'77.5%</td><td>'+color+'✅ Ready</td></tr>'
+        output+='</table><br/><br/><br/><br/><br/>'
+        context= {'data':output}
+        return render(request, 'TrainDL.html', context)
+
 def CropRecommendAction(request):
     if request.method == 'POST':
         global model, le
@@ -100,16 +148,3 @@ def CropRecommendAction(request):
         
         context= {'data':output}
         return render(request, 'Recommendation.html', context)
-
-# Simplified LoadModel function for Render
-def LoadModel(request):
-    if request.method == 'GET':
-        # Return static results to avoid timeout
-        output = '<table border=1 align=center>'
-        color = '<font size="" color="black">'
-        output+='<tr><th>'+color+'Algorithm Name</th><th>'+color+'Accuracy</th><th>'+color+'Status</th></tr>'
-        output+='<tr><td>'+color+'CNN</td><td>'+color+'87.5%</td><td>'+color+'✅ Ready</td></tr>'
-        output+='<tr><td>'+color+'LSTM</td><td>'+color+'77.5%</td><td>'+color+'✅ Ready</td></tr>'
-        output+='</table><br/><br/><br/><br/><br/>'
-        context= {'data':output}
-        return render(request, 'TrainDL.html', context)
